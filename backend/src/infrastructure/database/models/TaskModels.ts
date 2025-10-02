@@ -6,6 +6,7 @@ export interface ITaskDocument extends Document{
     description:string;
     status:string;
     priority:string;
+    dueDate:Date
     createdAt:Date;
     updatedAt:Date;
 }
@@ -16,6 +17,7 @@ const TaskSchema = new Schema<ITaskDocument>(
         description:{type:String,required:true},
         status:{type:String,required:true,default:"PENDING"},
         priority:{type:String,required:true,default:"LOW"},
+        dueDate:{type:Date,required:true}
     },
     {
         timestamps:true

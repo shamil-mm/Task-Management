@@ -4,11 +4,12 @@ import { TaskResponseDTO } from "../dtos/TaskDTO";
 export class TaskMapper{
     static toDTO(task:Task):TaskResponseDTO{
         return {
-            id:task.id,
+            _id:task._id,
             title:task.title,
             description:task.description,
             status:task.status,
             priority:task.priority,
+            dueDate:task.dueDate,
             createdAt:task.createdAt
         }
     }

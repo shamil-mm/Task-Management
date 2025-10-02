@@ -1,25 +1,62 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { loginUser } from "../services/authService";
+
+
+import { useDispatch,useSelector } from "react-redux";
+import { loginSuccess } from "../store/authSlice";
+import type { RootState } from "../store/store";
+
+import { joiLoginSchema } from "../validation/authValidation";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const navigate=useNavigate()
+  const dispatch=useDispatch();
+  const token=useSelector((state:RootState)=>state.auth.accessToken)
 
+  useEffect(()=>{
+    if(token){
+      navigate('/dashboard')
+    }
+  },[token,navigate])
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
+
+    const { error } = joiLoginSchema.validate(formData, { abortEarly: false });
+    if (error) {
+      const validationErrors: { email?: string; password?: string } = {};
+      error.details.forEach((detail) => {
+        const field = detail.path[0] as "email" | "password";
+        validationErrors[field] = detail.message;
+      });
+      setErrors(validationErrors);
+      return;
+    }
+
+
+
+
+
     try {
       const data =await loginUser(formData)
-      console.log("Login success:",data)
+      const { accessToken, email ,_id} = data;
+      dispatch(loginSuccess({token:accessToken,user:{email,_id}}))
+      if(data.message=="User logged in successfully"){
+        navigate('/dashboard')
+      }
+
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -39,17 +76,20 @@ const Login = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          required
+        
         />
-
+       {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>} 
         <Input
           label="Password"
           type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
-          required
+        
         />
+        {errors.password && (
+          <p className="text-red-500 text-sm">{errors.password}</p>
+        )}
 
         <button
           type="submit"

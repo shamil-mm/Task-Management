@@ -1,14 +1,15 @@
 import { Task } from "../../../domain/entities/Task";
+import { TaskPriority, TaskStatus } from "../../../domain/value-objects/TaskStatus";
 
 export interface ICreateTaskUseCase{
-  execute(data: { title: string; description: string }): Promise<Task>;
+  execute(userId:string,data:{title:string;description:string,status:TaskStatus,priority:TaskPriority,dueDate:Date}): Promise<Task>;
 }
 export interface IGetAllTaskUseCase{
-  execute():Promise<Task[]>
+  execute(userId:string):Promise<{tasks:Task[],unreadCount:number}>
 }
 export interface IUpdateTaskUseCase{
-  execute(id:string,data:{ title?: string ; description?: string}):Promise<Task|null>
+  execute(userId:string,taskId:string,data:{title?:string;description?:string,status?:TaskStatus,priority?:TaskPriority,dueDate?:Date}):Promise<Task|null>
 }
 export interface IDeleteTaskUseCase{
-  execute(id:string):Promise<boolean>
+  execute(userId:string,taskId:string):Promise<boolean>
 }

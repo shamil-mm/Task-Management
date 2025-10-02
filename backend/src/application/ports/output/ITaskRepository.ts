@@ -5,5 +5,6 @@ export interface ITaskRepository {
     findAll():Promise<Task[]>;
     findById(id:string):Promise<Task|null>;
     update(id:string,updates:Partial<Task>):Promise<Task|null>;
-    delete(id:string):Promise<boolean>;
+    delete(id: string): Promise<Task |null>
+    findByTitle(title: string): Promise<Task[]>
 }
