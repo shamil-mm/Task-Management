@@ -14,7 +14,7 @@ export class AuthMiddleware{
 
             
              if (!refreshToken) {
-                    res.cookie("accessToken","",{ httpOnly:true, secure:true,maxAge:0,sameSite:'none'})
+                    res.cookie("accessToken","",{ httpOnly:true, secure:true,maxAge:0,sameSite:'none',path:'/'})
                     return res.status(401).json({ message: "Refresh token missing, please login again.",logout:true});
                 }
             let userPayload:JwtPayload 
@@ -31,14 +31,14 @@ export class AuthMiddleware{
                 const newAccessToken= this.tokenService.generateAccessToken({email:user.email})
                 const newRefreshToken= this.tokenService.generateRefreshToken({email:user.email})
 
-                res.cookie("accessToken",newAccessToken,{ httpOnly:true, secure:true,maxAge:15*60*1000,sameSite:'none'})
-                res.cookie("refreshToken",newRefreshToken,{ httpOnly:true, secure:true,maxAge:7*24*60*60*1000,sameSite:'none'})
+                res.cookie("accessToken",newAccessToken,{ httpOnly:true, secure:true,maxAge:15*60*1000,sameSite:'none',path:'/'})
+                res.cookie("refreshToken",newRefreshToken,{ httpOnly:true, secure:true,maxAge:7*24*60*60*1000,sameSite:'none',path:'/'})
             }else{
                 try {
                     this.tokenService.verifyAccessToken(accessToken)
                 } catch (error) {
                     const newAccessToken= this.tokenService.generateAccessToken({email:user.email})
-                    res.cookie("accessToken",newAccessToken,{ httpOnly:true, secure:true,maxAge:15*60*1000,sameSite:'none'})
+                    res.cookie("accessToken",newAccessToken,{ httpOnly:true, secure:true,maxAge:15*60*1000,sameSite:'none',path:'/'})
                 }
             }
 
