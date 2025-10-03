@@ -21,8 +21,8 @@ export class AuthController{
 
             const { email,_id, accessToken, refreshToken }=await this.authService.userLogin(dto)
             const response=AuthMapper.toLoginUserResponseDTO(email,_id,accessToken,"User logged in successfully")
-            res.cookie("accessToken",accessToken,{ httpOnly:true, secure:false,maxAge:15*60*1000,sameSite:'lax'})
-            res.cookie("refreshToken",refreshToken,{ httpOnly:true, secure:false,maxAge:7*24*60*60*1000,sameSite:'lax'})
+            res.cookie("accessToken",accessToken,{ httpOnly:true, secure:true,maxAge:15*60*1000,sameSite:'none'})
+            res.cookie("refreshToken",refreshToken,{ httpOnly:true, secure:true,maxAge:7*24*60*60*1000,sameSite:'none'})
             res.status(200).json(response)
         } catch (error) {
             next(error)
@@ -49,8 +49,8 @@ export class AuthController{
     
     userLogout=async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            res.cookie("accessToken","",{ httpOnly:true, secure:false,maxAge:0,sameSite:'lax'})
-            res.cookie("refreshToken","",{ httpOnly:true, secure:false,maxAge:0,sameSite:'lax'})
+            res.cookie("accessToken","",{ httpOnly:true, secure:true,maxAge:0,sameSite:'none'})
+            res.cookie("refreshToken","",{ httpOnly:true, secure:true,maxAge:0,sameSite:'none'})
             res.status(200).json({message:"User logged out successfully"})
             
         } catch (error) {
