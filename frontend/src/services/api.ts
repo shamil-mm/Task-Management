@@ -15,7 +15,7 @@ api.interceptors.response.use(
         return response
     },
     async(error)=>{
-        if(error.response && error.response.status===401 && error.response.statusText ==="Unauthorized" && error.response?.data?.logout){
+        if(error.response && error.response.status===401 && error.response?.data?.logout){
             store.dispatch(logout())
             window.location.href = "/";
         }
